@@ -2,6 +2,8 @@
 library(shiny)
 library(DT)
 
+
+
 # Define the user interface (UI) of the Shiny app
 ui = fluidPage(
   fluidRow(
@@ -34,7 +36,8 @@ server <- function(input, output, session) {
   })
   
   # Initial data frame with an example comment
-  dat = data.frame(dataset = "ADSL", Comment = "example comment") 
+  dat = readRDS("comments.Rds")
+  
   
   # Reactive object to manage the current data frame
   df_current <- reactive({
@@ -62,10 +65,12 @@ server <- function(input, output, session) {
   # Render the data table output
   output$data <- renderDataTable({
     if (input$button > 0) {  # If the submit button has been pressed
+      saveRDS(df_current(), "comments.Rds")
       df_current()  # Return the updated data frame
     } else {
       # Return the initial dataset if no comments have been submitted
-      data.frame(dataset = "ADSL", Comment = "example comment") 
+      #data.frame(dataset = "ADSL", Comment = "example comment")
+      dat
     }
   })
   
@@ -80,5 +85,11 @@ server <- function(input, output, session) {
   )
 }
 
+
+
 # Run the Shiny app
 shinyApp(ui, server)
+
+# 
+# dat=data.frame(dataset="ADSL", comment = "example content")
+# saveRDS(dat, "comments.Rds")
